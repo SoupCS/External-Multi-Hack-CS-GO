@@ -1,15 +1,7 @@
-﻿using Microsoft.VisualBasic.ApplicationServices;
-using Microsoft.VisualBasic.Devices;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using xNet;
 
 namespace ExternalMultiHackCSGO
@@ -39,29 +31,32 @@ namespace ExternalMultiHackCSGO
         {
             GetModules();
 
-            try
+            while (true)
             {
-                while (true)
+                try
                 {
                     if (trigger == true)
                     {
-                        mem = new Memory("csgo");
-                        int LocalPlayer = mem.Read<int>(client_dll + Offsets.dwlocalplayer);
-
-                        int PlayerTeam = mem.Read<int>(LocalPlayer + Offsets.m_iTeamNum);
-
-                        int ChrosshairID = mem.Read<int>(LocalPlayer + Offsets.m_iCrosshairId);
-
-                        if (ChrosshairID > 0 && ChrosshairID <= 32)
+                        if (GetAsyncKeyState(0x10) != 0)
                         {
-                            int Target = mem.Read<int>(client_dll + Offsets.dwEntityList + (ChrosshairID - 1) * 0x10);
-                            int TargetTeam = mem.Read<int>(Target + Offsets.m_iTeamNum);
+                            mem = new Memory("csgo");
+                            int LocalPlayer = mem.Read<int>(client_dll + Offsets.dwlocalplayer);
 
-                            if (TargetTeam != PlayerTeam)
+                            int PlayerTeam = mem.Read<int>(LocalPlayer + Offsets.m_iTeamNum);
+
+                            int ChrosshairID = mem.Read<int>(LocalPlayer + Offsets.m_iCrosshairId);
+
+                            if (ChrosshairID > 0 && ChrosshairID <= 32)
                             {
-                                mouse_event(0x2, 0, 0, 0, UIntPtr.Zero);
-                                Thread.Sleep(1);
-                                mouse_event(0x4, 0, 0, 0, UIntPtr.Zero);
+                                int Target = mem.Read<int>(client_dll + Offsets.dwEntityList + (ChrosshairID - 1) * 0x10);
+                                int TargetTeam = mem.Read<int>(Target + Offsets.m_iTeamNum);
+
+                                if (TargetTeam != PlayerTeam)
+                                {
+                                    mouse_event(0x2, 0, 0, 0, UIntPtr.Zero);
+                                    Thread.Sleep(1);
+                                    mouse_event(0x4, 0, 0, 0, UIntPtr.Zero);
+                                }
                             }
                         }
                     }
@@ -96,27 +91,20 @@ namespace ExternalMultiHackCSGO
                             {
                                 int GlowIndex = mem.Read<int>(EntityList + Offsets.m_iGlowIndex);
 
-                                DrawEntity(GlowIndex, 0, 0, 255);
+                                DrawEntity(GlowIndex, 255, 0, 0);
                             }
                             else if (EntityTeam != 0 && EntityTeam == PlayerTeam)
                             {
                                 int GlowIndex = mem.Read<int>(EntityList + Offsets.m_iGlowIndex);
 
-                                DrawEntity(GlowIndex, 255, 0, 0);
+                                DrawEntity(GlowIndex, 0, 0, 255);
                             }
                         }
                     }
                 }
-            }
-            catch
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("██████ ██████ ██████ ██████ ██████");
-                Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                Console.WriteLine("██████ ████   ████   ██  ██ ████  ");
-                Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                Console.WriteLine("██████ ██  ██ ██  ██ ██████ ██  ██");
-                Console.ReadLine();
+                catch (Exception)
+                {
+                }
             }
         }
         static void DrawEntity(int ClowIndex, int red, int green, int blue)
@@ -141,59 +129,16 @@ namespace ExternalMultiHackCSGO
                     if (module.ModuleName == "client.dll")
                         client_dll = (int)module.BaseAddress;
                 }
-                while (true)
-                {
-                    Console.Title = "External-Multu-Hack-CSGO By SoupCS";
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("External-Multu-Hack-CSGO By SoupCS");
-                    Console.WriteLine("GitHub: https://github.com/SoupCS/External-Multi-Hack-CS-GO");
-                    Console.WriteLine("Futures: WallHack, Bhop, TriggerBot");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine("External-Multu-Hack-CSGO By SoupCS");
-                    Console.WriteLine("GitHub: https://github.com/SoupCS/External-Multi-Hack-CS-GO");
-                    Console.WriteLine("Futures: WallHack, Bhop, TriggerBot");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("External-Multu-Hack-CSGO By SoupCS");
-                    Console.WriteLine("GitHub: https://github.com/SoupCS/External-Multi-Hack-CS-GO");
-                    Console.WriteLine("Futures: WallHack, Bhop, TriggerBot");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("External-Multu-Hack-CSGO By SoupCS");
-                    Console.WriteLine("GitHub: https://github.com/SoupCS/External-Multi-Hack-CS-GO");
-                    Console.WriteLine("Futures: WallHack, Bhop, TriggerBot");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine("External-Multu-Hack-CSGO By SoupCS");
-                    Console.WriteLine("GitHub: https://github.com/SoupCS/External-Multi-Hack-CS-GO");
-                    Console.WriteLine("Futures: WallHack, Bhop, TriggerBot");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine("External-Multu-Hack-CSGO By SoupCS");
-                    Console.WriteLine("GitHub: https://github.com/SoupCS/External-Multi-Hack-CS-GO");
-                    Console.WriteLine("Futures: WallHack, Bhop, TriggerBot");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    Console.WriteLine("External-Multu-Hack-CSGO By SoupCS");
-                    Console.WriteLine("GitHub: https://github.com/SoupCS/External-Multi-Hack-CS-GO");
-                    Console.WriteLine("Futures: WallHack, Bhop, TriggerBot");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                }
+                Console.Title = "External-Multi-Hack-CSGO By SoupCS";
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("External-Multi-Hack-CSGO By SoupCS");
+                Console.WriteLine("github: https://github.com/SoupCS/External-Multi-Hack-CS-GO");
+                Console.WriteLine("futures: wallhack, bhop, triggerbot");
             }
             catch
             {
-                while (true)
-                {
-                    Console.Title = "External-Multu-Hack-CSGO By SoupCS";
+                    Console.Title = "External-Multi-Hack-CSGO By SoupCS";
                     Console.BackgroundColor = ConsoleColor.Black;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("██████ ██████ ██████ ██████ ██████");
@@ -201,57 +146,6 @@ namespace ExternalMultiHackCSGO
                     Console.WriteLine("██████ ████   ████   ██  ██ ████  ");
                     Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
                     Console.WriteLine("██████ ██  ██ ██  ██ ██████ ██  ██");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine("██████ ██████ ██████ ██████ ██████");
-                    Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                    Console.WriteLine("██████ ████   ████   ██  ██ ████  ");
-                    Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                    Console.WriteLine("██████ ██  ██ ██  ██ ██████ ██  ██");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("██████ ██████ ██████ ██████ ██████");
-                    Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                    Console.WriteLine("██████ ████   ████   ██  ██ ████  ");
-                    Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                    Console.WriteLine("██████ ██  ██ ██  ██ ██████ ██  ██");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("██████ ██████ ██████ ██████ ██████");
-                    Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                    Console.WriteLine("██████ ████   ████   ██  ██ ████  ");
-                    Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                    Console.WriteLine("██████ ██  ██ ██  ██ ██████ ██  ██");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine("██████ ██████ ██████ ██████ ██████");
-                    Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                    Console.WriteLine("██████ ████   ████   ██  ██ ████  ");
-                    Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                    Console.WriteLine("██████ ██  ██ ██  ██ ██████ ██  ██");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine("██████ ██████ ██████ ██████ ██████");
-                    Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                    Console.WriteLine("██████ ████   ████   ██  ██ ████  ");
-                    Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                    Console.WriteLine("██████ ██  ██ ██  ██ ██████ ██  ██");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    Console.WriteLine("██████ ██████ ██████ ██████ ██████");
-                    Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                    Console.WriteLine("██████ ████   ████   ██  ██ ████  ");
-                    Console.WriteLine("██     ██  ██ ██  ██ ██  ██ ██  ██");
-                    Console.WriteLine("██████ ██  ██ ██  ██ ██████ ██  ██");
-                    Thread.Sleep(25);
-                    Console.Clear();
-                }
             }
         }
         private static bool Flags()
